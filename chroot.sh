@@ -77,7 +77,7 @@ pacman --noconfirm --needed -S lf feh picom libnotify dunst
 pacman --noconfirm --needed -S bat mediainfo ffmpegthumbnailer imagemagick\
  calcurse exiv2 sxiv xclip gimp zathura zathura-pdf-mupdf obs-studio ncmpcpp\
  mpd mpv noto-fonts noto-fonts-emoji pipewire pamixer pulseaudio pulsemixer python-pywal
-pacman --noconfirm --needed -S net-tools firefox firefox-i18n-zh-cno
+pacman --noconfirm --needed -S net-tools firefox firefox-i18n-zh-cn
 pacman --noconfirm --needed -S alsa-utils
 pacman --noconfirm --needed -S figlet neofetch
 pacman --noconfirm --needed -S v2ray qv2ray
