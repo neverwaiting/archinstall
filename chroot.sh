@@ -127,7 +127,7 @@ sudo -u "$name" git clone "$MIRROR_GITHUB_URL/neverwaiting/dotfiles.git" "$USER_
 sudo -u "$name" cp -r "$USER_HOME/dotfiles/.config" "$USER_HOME/" && \
 sudo -u "$name" cp -r "$USER_HOME/dotfiles/.local" "$USER_HOME/" && \
 sudo -u "$name" cp "$USER_HOME/dotfiles/.zprofile" "$USER_HOME/" && \
-sudo -u "$name" cp "$USER_CONFIG_HOME/x11/Xmodmap" "$USER_HOME/.Xmodmap" && \
+sudo -u "$name" cp "$USER_CONFIG_HOME/x11/xmodmap" "$USER_HOME/.Xmodmap" && \
 sudo -u "$name" cp "$USER_CONFIG_HOME/npm/npmrc" "$USER_HOME/.npmrc" || echo -e "########## set dotfiles error! ##########\n"
 
 # add font CascadiaCode
