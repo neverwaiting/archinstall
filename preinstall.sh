@@ -1,0 +1,85 @@
+#!/bin/sh
+
+echo -e "There are some devices, please choice one of below:\n"
+eval $(sudo fdisk -l | awk 'BEGIN {i=0} /^Disk \/dev/ { printf("ALL_DEVS[%s]=%s;",i++,$2 $3 $4)}')
+
+while true; do
+  for ((i=0; i < ${#ALL_DEVS[*]}; ++i)); do
+    echo "$i ${ALL_DEVS[$i]}"
+  done
+  read -p"please select one option: " option
+  DEV=${ALL_DEVS[$option]}
+  if [ -n "$DEV" ]; then
+    break
+  fi
+  echo -e "option $option not found!\n"
+done
+
+echo -e "you choice device: $DEV\n\n"
+DEV=$(echo $DEV | awk -F: '{print $1}')
+
+read -p"your hostname: " HOSTNAME
+
+# installing
+timedatectl set-ntp true
+
+cat <<EOF | fdisk $DEV
+g
+n
+
+
++512M
+t
+1
+n
+
+
++8G
+t
+
+19
+n
+
+
+
+t
+
+23
+w
+p
+EOF
+
+DEV_NAME=$(echo $DEV | awk -F"/" '{print $3}')
+eval $(sudo fdisk -l | awk 'BEGIN {i=0} /^\/dev\/'"$DEV_NAME"'/ {printf("PARTITION[%s]=%s;",i++,$1)}')
+
+partprobe $DEV
+
+mkfs.fat -F 32 ${PARTITION[0]}
+yes | mkfs.ext4 ${PARTITION[2]}
+mkswap ${PARTITION[1]}
+swapon ${PARTITION[1]}
+
+mount ${PARTITION[2]} /mnt
+mkdir /mnt/boot
+mount ${PARTITION[0]} /mnt/boot
+
+reflector --country China --latest 5 --protocol http --protocol https --sort rate --save /etc/pacman.d/mirrorlist > /dev/null 2>&1
+
+echo -e "[archlinuxcn]\nServer = https://repo.archlinuxcn.org/\$arch" >> /etc/pacman.conf
+
+pacman -Sy --noconfirm archlinux-keyring archlinuxcn-keyring
+
+pacstrap /mnt base base-devel linux linux-firmware vi neovim dhcpcd || (echo "pacstrap error"; exit 1)
+genfstab -U /mnt >> /mnt/etc/fstab
+
+echo $HOSTNAME >> /mnt/etc/hostname
+
+# arch-chroot /mnt
+curl -fsL https://github.91chi.fun/https://raw.github.com/neverwaiting/archlinux-installer/master/chroot.sh > /mnt/chroot.sh && arch-chroot /mnt bash chroot.sh && rm /mnt/chroot.sh
+
+umount -R /mnt
+
+read -p"Are you reboot? yes/no: " isreboot
+if [ $isreboot == "yes" ]; then
+  reboot
+fi
