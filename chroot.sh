@@ -102,7 +102,7 @@ install_git_project() {
     pushd $pname && make clean install > /dev/null 2>&1 && popd
   done
 }
-mkdir tools && pushd tools && install_git_project dwm st dmenu && popd
+mkdir tools && pushd tools && install_git_project dwm st dmenu dwmblocks && popd
 mv /tools "$USER_HOME/tools"
 chown -R "$name":wheel "$USER_HOME/tools"
 
@@ -144,4 +144,4 @@ sudo -u "$name" ZSH="$USER_CONFIG_HOME/zsh/oh-my-zsh" sh "$USER_HOME/omzinstall.
 sudo -u "$name" git clone --depth=1 "$MIRROR_GITHUB_URL/romkatv/powerlevel10k.git" "$USER_CONFIG_HOME/zsh/oh-my-zsh/custom/themes/powerlevel10k" && \
 rm -rf $USER_HOME/{.zshrc,omzinstall.sh} || echo -e "########## install oh-my-zsh or powerlevel10k error! ##########\n"
 
-rm -rf $USER_HOME/{.bash_logout,.bash_profile,.bashrc,tools}
+rm -rf $USER_HOME/{.bash_logout,.bash_profile,.bashrc,tools,dotfiles}
