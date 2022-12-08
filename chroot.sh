@@ -70,7 +70,7 @@ case $driver in
     install mesa vulkan-radeon xf86-video-amdgpu;;
   "3")
     # for nvidia
-    install nvidia nvidia-settings nvidia-utils;;
+    install linux-lts nvidia-lts nvidia-settings nvidia-utils;;
 esac
 
 install xorg xorg-server xorg-xinit
@@ -137,5 +137,11 @@ sudo -u "$name" cp -r "$USER_HOME/dotfiles/.config" "$USER_HOME/" && \
 sudo -u "$name" cp -r "$USER_HOME/dotfiles/.local" "$USER_HOME/" && \
 sudo -u "$name" cp "$USER_HOME/dotfiles/.zprofile" "$USER_HOME/" && \
 sudo -u "$name" cp "$USER_CONFIG_HOME/npm/npmrc" "$USER_HOME/.npmrc" || echo -e "########## set dotfiles error! ##########\n"
+
+# configuration for picom
+sed -i "s/^fade-in-step = \S*/fade-in-step = 0.08;/; s/^fade-out-step = \S*/fade-out-step = 0.08;/; s/^backend = \S*/backend = \"glx\";/" /etc/xdg/picom.conf
+
+# install grub-theme
+git clone "$MIRROR_GITHUB_URL/vinceliuice/grub2-themes.git" && pushd grub2-themes && ./install.sh -b -t stylish -s 4k && popd && rm -rf grub2-themes
 
 rm -rf $USER_HOME/{.bash_logout,.bash_profile,.bashrc,tools,dotfiles}
