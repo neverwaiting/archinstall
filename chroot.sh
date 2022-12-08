@@ -77,7 +77,7 @@ install xorg xorg-server xorg-xinit
 install openssh && systemctl enable sshd
 install cronie && systemctl enable cronie
 install openvpn starship zsh git wget zip unzip ripgrep fd fzf cmake ccls htop benchmark man-pages
-install go lua nodejs npm python python-pip
+install go lua luarocks nodejs npm python python-pip websocketd
 install lf feh picom libnotify dunst
 install bat mediainfo ffmpeg ffmpegthumbnailer imagemagick\
  calcurse exiv2 sxiv xclip gimp zathura zathura-pdf-mupdf obs-studio \
