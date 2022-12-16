@@ -101,14 +101,14 @@ USER_FCITX_THEME_DIR="$USER_LOCAL_HOME/share/fcitx5/themes"
 sudo -u "$name" git -C "$USER_FCITX_THEME_DIR" clone "$MIRROR_GITHUB_URL/sxqsfun/fcitx5-sogou-themes.git"
 sudo -u "$name" cp -r "$USER_FCITX_THEME_DIR/fcitx5-sogou-themes/Alpha-black" "$USER_FCITX_THEME_DIR"
 
-# install dwm(dynamic window manager), st(simple terminal), dmenu(menu bar)
+# install dwm(dynamic window manager), st(simple terminal), dmenu(menu bar), dwmblocks, slock
 install_git_project() {
   for pname in "$@"; do
     git clone "$MIRROR_GITHUB_URL/neverwaiting/$pname.git"
     pushd $pname && make clean install > /dev/null 2>&1 && popd
   done
 }
-mkdir tools && pushd tools && install_git_project dwm st dmenu dwmblocks && popd
+mkdir tools && pushd tools && install_git_project dwm st dmenu dwmblocks slock && popd
 mv /tools "$USER_HOME/tools"
 chown -R "$name":wheel "$USER_HOME/tools"
 
