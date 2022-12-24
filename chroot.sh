@@ -81,7 +81,7 @@ install go lua luarocks nodejs npm python python-pip websocketd
 install lf feh picom libnotify dunst
 install bat mediainfo ffmpeg ffmpegthumbnailer imagemagick\
  calcurse exiv2 sxiv xclip gimp zathura zathura-pdf-mupdf obs-studio \
- mpv noto-fonts noto-fonts-emoji pipewire pamixer pulseaudio pulsemixer\
+ mpv noto-fonts noto-fonts-emoji ttf-font-awesome pipewire pamixer pulseaudio pulsemixer\
  python-pywal ueberzug bmon yt-dlp lynx
 install net-tools brave-bin
 install alsa-utils
