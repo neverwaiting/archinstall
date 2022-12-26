@@ -1,5 +1,16 @@
 #!/bin/sh
 
+read -p"please input your name: " name
+export name
+while true; do
+  read -s -p"please input your password: " password
+  echo
+  read -s -p"please input your password again: " repassword
+  echo
+  [ "$password" == "$repassword" ] && break
+done
+export password
+
 echo -e "There are some devices, please choice one of below:\n"
 eval $(sudo fdisk -l | awk 'BEGIN {i=0} /^Disk \/dev/ { printf("ALL_DEVS[%s]=%s;",i++,$2 $3 $4)}')
 
@@ -17,6 +28,15 @@ done
 
 echo -e "you choice device: $DEV\n\n"
 DEV=$(echo $DEV | awk -F: '{print $1}')
+
+cat <<EOF
+please choice your GPU driver:
+  1) Intel integrated video card
+  2) Amd integrated video card
+  3) Nivdia external video card
+EOF
+read -p"(default=1): " driver
+export driver
 
 read -p"your hostname: " HOSTNAME
 
@@ -69,13 +89,14 @@ echo -e "[archlinuxcn]\nServer = https://repo.archlinuxcn.org/\$arch" >> /etc/pa
 
 pacman -Sy --noconfirm archlinux-keyring archlinuxcn-keyring
 
-pacstrap /mnt base linux linux-firmware || (echo "pacstrap error"; exit 1)
+pacstrap /mnt base linux linux-firmware
 genfstab -U /mnt >> /mnt/etc/fstab
 
 echo $HOSTNAME >> /mnt/etc/hostname
 
 # arch-chroot /mnt
-cp chroot.sh /mnt/chroot.sh && arch-chroot /mnt bash chroot.sh && rm /mnt/chroot.sh
+curl -fsL https://github.91chi.fun/https://raw.github.com/neverwaiting/archinstall/master/chroot.sh > /mnt/chroot.sh && \
+arch-chroot /mnt bash chroot.sh && rm /mnt/chroot.sh
 
 umount -R /mnt
 

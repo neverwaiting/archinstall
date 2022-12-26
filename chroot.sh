@@ -48,9 +48,6 @@ cat << EOF >> /etc/hosts
 127.0.0.1	$HOSTNAME.localdomain	$HOSTNAME
 EOF
 
-name="wintersun"
-password="zdy.1234"
-
 # create user
 useradd -m -g wheel -s /bin/zsh "$name" >/dev/null 2>&1 
 echo "$name:$password" | chpasswd
@@ -83,11 +80,6 @@ Server = https://repo.archlinuxcn.org/\$arch
 EOF
 pacman -Sy --noconfirm archlinux-keyring archlinuxcn-keyring
 
-echo -e "please choice your GPU driver:\n"\
-        "\t1) Intel integrated video card\n"\
-        "\t2) Amd integrated video card\n"\
-        "\t3) Nivdia external video card\n"
-read -p"(default=1): " driver
 if [ -z $driver ]; then driver="1"; fi
 case $driver in
   "1")
@@ -117,6 +109,8 @@ USER_FCITX_THEME_DIR="$USER_LOCAL_HOME/share/fcitx5/themes"
 sudo -u "$name" git -C "$USER_FCITX_THEME_DIR" clone "$MIRROR_GITHUB_URL/sxqsfun/fcitx5-sogou-themes.git"
 sudo -u "$name" cp -r "$USER_FCITX_THEME_DIR/fcitx5-sogou-themes/Alpha-black" "$USER_FCITX_THEME_DIR"
 
+# install packages in packages.csv file
+curl -fsL https://github.91chi.fun/https://raw.github.com/neverwaiting/archinstall/master/packages.csv > /tmp/packages.csv
 while IFS=',' read -a packs; do
   if [ -z "${packs[0]}" ]; then
     pacpackages="$pacpackages ${packs[1]}"
@@ -127,7 +121,7 @@ while IFS=',' read -a packs; do
   elif [ "${packs[0]}" == "G" ]; then
     gitpackages="$gitpackages ${packs[1]}"
   fi
-done < packages.csv
+done < /tmp/packages.csv
 
 aur_install yay
 [ -z "$pacpackages" ] || pacman_install "$pacpackages"
