@@ -4,7 +4,7 @@ USER_HOME="/home/$name"
 USER_LOCAL_HOME="$USER_HOME/.local"
 USER_CONFIG_HOME="$USER_HOME/.config"
 MIRROR_GITHUB_URL="https://github.91chi.fun/https://github.com"
-TEMP_PACKAGES_DIR="$USER_HOME/temp/packages"
+TEMP_PACKAGES_DIR="/tmp/packages"
 
 pacman_install() {
   pacman --noconfirm --needed -S $@
@@ -59,6 +59,7 @@ chsh -s /bin/zsh "$name" >/dev/null 2>&1
 # set root password same with user's password
 echo -e "$password\n$password" | passwd
 
+pacman_install git
 pacman_install networkmanager && systemctl enable NetworkManager && systemctl start NetworkManager
 
 # ucode intel/amd
@@ -141,5 +142,4 @@ sed -i "s/^fade-in-step = \S*/fade-in-step = 0.08;/; s/^fade-out-step = \S*/fade
 git clone "$MIRROR_GITHUB_URL/vinceliuice/grub2-themes.git" && pushd grub2-themes && ./install.sh -b -t stylish -s 4k && popd && rm -rf grub2-themes
 
 # clean unused files
-[ -d "$TEMP_PACKAGES_DIR" ] && rm -rf "$TEMP_PACKAGES_DIR"
 rm -rf $USER_HOME/{.bash_logout,.bash_profile,.bashrc,dotfiles}
