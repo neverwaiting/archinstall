@@ -8,10 +8,10 @@ pacman_install() {
 
 aur_install() {
   storage_dir=${temp_packages_dir:-"/tmp/packages"}
-  [ -d "$storage_dir" ] || mkdir -p "$storage_dir"
+  [ -d "$storage_dir" ] || sudo -u "$name" mkdir -p "$storage_dir"
   for item in $@; do
     sudo -u "$name" git -C "$storage_dir" clone "https://aur.archlinux.org/${item}.git" && \
-    sudo -u "$name" sed -iE 's#(https://github.com)#https://github.91chi.fun/\1#g' "$storage_dir/$item/PKGBUILD" && \
+    sudo -u "$name" sed -iE 's#https://github\.com#https://github\.91chi\.fun/&#g' "$storage_dir/$item/PKGBUILD" && \
     pushd "$storage_dir/$item" && \
     sudo -u "$name" GOPROXY="https://goproxy.cn" makepkg --noconfirm -si && \
     popd || echo -e "########## AUR: Install $item failed! ##########\n"
