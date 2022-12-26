@@ -10,17 +10,6 @@ pacman_install() {
   pacman --noconfirm --needed -S $@
 }
 
-aur_install() {
-  [ -d "$TEMP_PACKAGES_DIR" ] || sudo -u "$name" mkdir -p "$TEMP_PACKAGES_DIR"
-  for item in $@; do
-    sudo -u "$name" git -C "$TEMP_PACKAGES_DIR" clone "https://aur.archlinux.org/${item}.git" && \
-    sudo -u "$name" sed -iE 's#https://github\.com#https://github\.91chi\.fun/&#g' "$TEMP_PACKAGES_DIR/$item/PKGBUILD" && \
-    pushd "$TEMP_PACKAGES_DIR/$item" && \
-    sudo -u "$name" GOPROXY="https://goproxy.cn" makepkg --noconfirm -si && \
-    popd || echo -e "########## AUR: Install $item failed! ##########\n"
-  done
-}
-
 yay_install() {
   sudo -u "$name" yay -S --noconfirm $@
 }
@@ -105,6 +94,17 @@ USER_FCITX_THEME_DIR="$USER_LOCAL_HOME/share/fcitx5/themes"
 [ -d "$USER_FCITX_THEME_DIR" ] || sudo -u "$name" mkdir -p "$USER_FCITX_THEME_DIR"
 sudo -u "$name" git -C "$USER_FCITX_THEME_DIR" clone "$MIRROR_GITHUB_URL/sxqsfun/fcitx5-sogou-themes.git"
 sudo -u "$name" cp -r "$USER_FCITX_THEME_DIR/fcitx5-sogou-themes/Alpha-black" "$USER_FCITX_THEME_DIR"
+
+aur_install() {
+  [ -d "$TEMP_PACKAGES_DIR" ] || sudo -u "$name" mkdir -p "$TEMP_PACKAGES_DIR"
+  for item in $@; do
+    sudo -u "$name" git -C "$TEMP_PACKAGES_DIR" clone "https://aur.archlinux.org/${item}.git" && \
+    sudo -u "$name" sed -iE 's#https://github\.com#https://github\.91chi\.fun/&#g' "$TEMP_PACKAGES_DIR/$item/PKGBUILD" && \
+    pushd "$TEMP_PACKAGES_DIR/$item" && \
+    sudo -u "$name" GOPROXY="https://goproxy.cn" makepkg --noconfirm -si && \
+    popd || echo -e "########## AUR: Install $item failed! ##########\n"
+  done
+}
 
 # install packages in packages.csv file
 curl -fsL https://github.91chi.fun/https://raw.github.com/neverwaiting/archinstall/master/packages.csv > /tmp/packages.csv
