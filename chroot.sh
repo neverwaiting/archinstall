@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 USER_HOME="/home/$name"
 USER_LOCAL_HOME="$USER_HOME/.local"
 USER_CONFIG_HOME="$USER_HOME/.config"
