@@ -1,8 +1,5 @@
 #TAG,PACKAGE NAME(or repo name or git url),DESCRIPTION
-,base-devel,
-,vi,
 ,neovim,
-,dhcpcd,
 ,xorg,
 ,xorg-server,is the graphical server.
 ,xorg-xinit,
