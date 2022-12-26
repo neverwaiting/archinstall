@@ -52,6 +52,7 @@ cat << EOF >> /etc/hosts
 127.0.0.1	$HOSTNAME.localdomain	$HOSTNAME
 EOF
 
+pacman_install zsh
 # create user
 useradd -m -g wheel -s /bin/zsh "$name"
 echo "$name:$password" | chpasswd
