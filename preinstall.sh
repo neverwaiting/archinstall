@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 read -p"please input your name: " name
 export name
 while true; do
