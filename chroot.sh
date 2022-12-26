@@ -1,18 +1,21 @@
 #!/bin/sh
 
-temp_packages_dir="/tmp/packages"
+USER_HOME="/home/$name"
+USER_LOCAL_HOME="$USER_HOME/.local"
+USER_CONFIG_HOME="$USER_HOME/.config"
+MIRROR_GITHUB_URL="https://github.91chi.fun/https://github.com"
+TEMP_PACKAGES_DIR="$USER_HOME/temp/packages"
 
 pacman_install() {
   pacman --noconfirm --needed -S $@
 }
 
 aur_install() {
-  storage_dir=${temp_packages_dir:-"/tmp/packages"}
-  [ -d "$storage_dir" ] || sudo -u "$name" mkdir -p "$storage_dir"
+  [ -d "$TEMP_PACKAGES_DIR" ] || sudo -u "$name" mkdir -p "$TEMP_PACKAGES_DIR"
   for item in $@; do
-    sudo -u "$name" git -C "$storage_dir" clone "https://aur.archlinux.org/${item}.git" && \
-    sudo -u "$name" sed -iE 's#https://github\.com#https://github\.91chi\.fun/&#g' "$storage_dir/$item/PKGBUILD" && \
-    pushd "$storage_dir/$item" && \
+    sudo -u "$name" git -C "$TEMP_PACKAGES_DIR" clone "https://aur.archlinux.org/${item}.git" && \
+    sudo -u "$name" sed -iE 's#https://github\.com#https://github\.91chi\.fun/&#g' "$TEMP_PACKAGES_DIR/$item/PKGBUILD" && \
+    pushd "$TEMP_PACKAGES_DIR/$item" && \
     sudo -u "$name" GOPROXY="https://goproxy.cn" makepkg --noconfirm -si && \
     popd || echo -e "########## AUR: Install $item failed! ##########\n"
   done
@@ -23,9 +26,8 @@ yay_install() {
 }
 
 git_install() {
-  storage_dir=${temp_packages_dir:-"/tmp/packages"}
-  [ -d "$storage_dir" ] || mkdir -p "$storage_dir"
-  pushd "$storage_dir"
+  [ -d "$TEMP_PACKAGES_DIR" ] || sudo -u "$name" mkdir -p "$TEMP_PACKAGES_DIR"
+  pushd "$TEMP_PACKAGES_DIR"
   for repo in $@; do
     git clone "$repo"
     repo_name=$(echo "$repo" | sed -E 's/.+\/(.+)\.git/\1/')
@@ -96,11 +98,6 @@ esac
 pacman_install openssh && systemctl enable sshd
 pacman_install cronie && systemctl enable cronie
 
-USER_HOME="/home/$name"
-USER_LOCAL_HOME="$USER_HOME/.local"
-USER_CONFIG_HOME="$USER_HOME/.config"
-MIRROR_GITHUB_URL="https://github.91chi.fun/https://github.com"
-
 # install input for chinese
 pacman_install fcitx5-im fcitx5-chinese-addons fcitx5-lua fcitx5-pinyin-zhwiki
 pacman_install adobe-source-han-sans-cn-fonts adobe-source-han-serif-cn-fonts
@@ -123,8 +120,8 @@ while IFS=',' read -a packs; do
   fi
 done < /tmp/packages.csv
 
-aur_install yay
 [ -z "$pacpackages" ] || pacman_install "$pacpackages"
+aur_install yay
 [ -z "$aurpackages" ] || aur_install "$aurpackages" 
 [ -z "$yaypackages" ] || yay_install "$yaypackages"
 [ -z "$gitpackages" ] || git_install "$gitpackages" 
@@ -144,4 +141,5 @@ sed -i "s/^fade-in-step = \S*/fade-in-step = 0.08;/; s/^fade-out-step = \S*/fade
 git clone "$MIRROR_GITHUB_URL/vinceliuice/grub2-themes.git" && pushd grub2-themes && ./install.sh -b -t stylish -s 4k && popd && rm -rf grub2-themes
 
 # clean unused files
+[ -d "$TEMP_PACKAGES_DIR" ] && rm -rf "$TEMP_PACKAGES_DIR"
 rm -rf $USER_HOME/{.bash_logout,.bash_profile,.bashrc,dotfiles}
