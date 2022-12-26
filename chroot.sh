@@ -53,10 +53,10 @@ cat << EOF >> /etc/hosts
 EOF
 
 # create user
-useradd -m -g wheel -s /bin/zsh "$name" > /dev/null 2>&1 
+useradd -m -g wheel -s /bin/zsh "$name"
 echo "$name:$password" | chpasswd
 echo "%wheel ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/temp
-chsh -s /bin/zsh "$name" >/dev/null 2>&1
+chsh -s /bin/zsh "$name"
 
 # set root password same with user's password
 echo -e "$password\n$password" | passwd
