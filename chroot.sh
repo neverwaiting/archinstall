@@ -1,7 +1,37 @@
 #!/bin/sh
 
-install() {
+temp_packages_dir="/tmp/packages"
+
+pacman_install() {
   pacman --noconfirm --needed -S $@
+}
+
+aur_install() {
+  storage_dir=${temp_packages_dir:-"/tmp/packages"}
+  [ -d "$storage_dir" ] || mkdir -p "$storage_dir"
+  for item in $@; do
+    sudo -u "$name" git -C "$storage_dir" clone "https://aur.archlinux.org/${item}.git" && \
+    sudo -u "$name" sed -iE 's#(https://github.com)#https://github.91chi.fun/\1#g' "$storage_dir/$item/PKGBUILD" && \
+    pushd "$storage_dir/$item" && \
+    sudo -u "$name" GOPROXY="https://goproxy.cn" makepkg --noconfirm -si && \
+    popd || echo -e "########## AUR: Install $item failed! ##########\n"
+  done
+}
+
+yay_install() {
+  sudo -u "$name" yay -S --noconfirm $@
+}
+
+git_install() {
+  storage_dir=${temp_packages_dir:-"/tmp/packages"}
+  [ -d "$storage_dir" ] || mkdir -p "$storage_dir"
+  pushd "$storage_dir"
+  for repo in $@; do
+    git clone "$repo"
+    repo_name=$(echo "$repo" | sed -E 's/.+\/(.+)\.git/\1/')
+    pushd "$repo_name" && make clean install > /dev/null 2>&1 && popd
+  done
+  popd
 }
 
 ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
@@ -30,9 +60,7 @@ chsh -s /bin/zsh "$name" >/dev/null 2>&1
 # set root password same with user's password
 echo -e "$password\n$password" | passwd
 
-install networkmanager
-systemctl enable NetworkManager
-systemctl start NetworkManager
+pacman_install networkmanager && systemctl enable NetworkManager && systemctl start NetworkManager
 
 # ucode intel/amd
 if [ -n "$(lscpu | awk '/Model name/' | grep AMD)" ]; then
@@ -40,13 +68,13 @@ if [ -n "$(lscpu | awk '/Model name/' | grep AMD)" ]; then
 else
   UCODE="intel-ucode"
 fi
-install grub efibootmgr $UCODE os-prober
+pacman_install grub efibootmgr $UCODE os-prober
 
 grub-install --target="$(uname -m)-efi" --efi-directory=/boot --removable
 grub-mkconfig -o /boot/grub/grub.cfg
 
 # update mirror source
-install reflector
+pacman_install reflector
 reflector --country China --latest 5 --protocol http --protocol https --sort rate --save /etc/pacman.d/mirrorlist > /dev/null 2>&1
 cat << EOF >> /etc/pacman.conf
 [archlinuxcn]
@@ -64,29 +92,17 @@ if [ -z $driver ]; then driver="1"; fi
 case $driver in
   "1")
     # for intel
-    install mesa vulkan-intel xf86-video-intel;;
+    pacman_install mesa vulkan-intel xf86-video-intel;;
   "2")
     # for amd
-    install mesa vulkan-radeon xf86-video-amdgpu;;
+    pacman_install mesa vulkan-radeon xf86-video-amdgpu;;
   "3")
     # for nvidia
-    install linux-lts nvidia-lts nvidia-settings nvidia-utils;;
+    pacman_install linux-lts nvidia-lts nvidia-settings nvidia-utils;;
 esac
 
-install xorg xorg-server xorg-xinit
-install openssh && systemctl enable sshd
-install cronie && systemctl enable cronie
-install openvpn starship zsh git wget zip unzip ripgrep fd fzf cmake ccls htop benchmark man-pages
-install go lua luarocks nodejs npm python python-pip websocketd
-install lf feh picom libnotify dunst
-install bat mediainfo ffmpeg ffmpegthumbnailer imagemagick\
- calcurse exiv2 sxiv xclip gimp zathura zathura-pdf-mupdf obs-studio \
- mpv noto-fonts noto-fonts-emoji ttf-font-awesome pipewire pamixer pulseaudio pulsemixer\
- python-pywal ueberzug bmon yt-dlp lynx
-install net-tools brave-bin
-install alsa-utils
-install figlet neofetch
-install v2ray qv2ray
+pacman_install openssh && systemctl enable sshd
+pacman_install cronie && systemctl enable cronie
 
 USER_HOME="/home/$name"
 USER_LOCAL_HOME="$USER_HOME/.local"
@@ -94,42 +110,31 @@ USER_CONFIG_HOME="$USER_HOME/.config"
 MIRROR_GITHUB_URL="https://github.91chi.fun/https://github.com"
 
 # install input for chinese
-install fcitx5-im fcitx5-chinese-addons fcitx5-lua fcitx5-pinyin-zhwiki
-install adobe-source-han-sans-cn-fonts adobe-source-han-serif-cn-fonts
+pacman_install fcitx5-im fcitx5-chinese-addons fcitx5-lua fcitx5-pinyin-zhwiki
+pacman_install adobe-source-han-sans-cn-fonts adobe-source-han-serif-cn-fonts
 USER_FCITX_THEME_DIR="$USER_LOCAL_HOME/share/fcitx5/themes" 
 [ -d "$USER_FCITX_THEME_DIR" ] || sudo -u "$name" mkdir -p "$USER_FCITX_THEME_DIR"
 sudo -u "$name" git -C "$USER_FCITX_THEME_DIR" clone "$MIRROR_GITHUB_URL/sxqsfun/fcitx5-sogou-themes.git"
 sudo -u "$name" cp -r "$USER_FCITX_THEME_DIR/fcitx5-sogou-themes/Alpha-black" "$USER_FCITX_THEME_DIR"
 
-# install dwm(dynamic window manager), st(simple terminal), dmenu(menu bar), dwmblocks, slock
-install_git_project() {
-  for pname in "$@"; do
-    git clone "$MIRROR_GITHUB_URL/neverwaiting/$pname.git"
-    pushd $pname && make clean install > /dev/null 2>&1 && popd
-  done
-}
-mkdir tools && pushd tools && install_git_project dwm st dmenu dwmblocks slock && popd
-mv /tools "$USER_HOME/tools"
-chown -R "$name":wheel "$USER_HOME/tools"
+while IFS=',' read -a packs; do
+  if [ -z "${packs[0]}" ]; then
+    pacpackages="$pacpackages ${packs[1]}"
+  elif [ "${packs[0]}" == "Y" ]; then
+    yaypackages="$yaypackages ${packs[1]}"
+  elif [ "${packs[0]}" == "A" ]; then
+    aurpackages="$aurpackages ${packs[1]}"
+  elif [ "${packs[0]}" == "G" ]; then
+    gitpackages="$gitpackages ${packs[1]}"
+  fi
+done < packages.csv
 
-# install yay(AUR) for user
-sudo -u "$name" git -C "$USER_HOME/tools" clone https://aur.archlinux.org/yay.git && \
-sudo -u "$name" sed -i 's/https:\/\/github.com/https:\/\/github.91chi.fun\/https:\/\/github.com/g' "$USER_HOME/tools/yay/PKGBUILD" && \
-pushd "$USER_HOME/tools/yay" && \
-sudo -u "$name" GOPROXY="https://goproxy.cn" makepkg --noconfirm -si && \
-popd || echo -e "########## install yay error! ##########\n"
-
-# install yesplaymusic
-sudo -u "$name" git -C "$USER_HOME/tools" clone https://aur.archlinux.org/yesplaymusic.git && \
-sudo -u "$name" sed -i 's/https:\/\/github.com/https:\/\/github.91chi.fun\/https:\/\/github.com/g' "$USER_HOME/tools/yesplaymusic/PKGBUILD" && \
-pushd "$USER_HOME/tools/yesplaymusic" && \
-sudo -u "$name" GOPROXY="https://goproxy.cn" makepkg --noconfirm -si && \
-popd && ln -sf /opt/YesPlayMusic/yesplaymusic /bin/yesplaymusic || echo -e "########## install yesplaymusic error! ##########\n"
-
-# install zsh syntax highlight plugin
-sudo -u "$name" yay -S --noconfirm zsh-fast-syntax-highlighting
-
-sudo -u "$name" yay -S --noconfirm lolcat
+aur_install yay
+[ -z "$pacpackages" ] || pacman_install "$pacpackages"
+[ -z "$aurpackages" ] || aur_install "$aurpackages" 
+[ -z "$yaypackages" ] || yay_install "$yaypackages"
+[ -z "$gitpackages" ] || git_install "$gitpackages" 
+[ -x /opt/YesPlayMusic/yesplaymusic ] && ln -sf /opt/YesPlayMusic/yesplaymusic /bin/yesplaymusic
 
 # set dotfiles
 sudo -u "$name" git clone "$MIRROR_GITHUB_URL/neverwaiting/dotfiles.git" "$USER_HOME/dotfiles"&& \
@@ -144,4 +149,5 @@ sed -i "s/^fade-in-step = \S*/fade-in-step = 0.08;/; s/^fade-out-step = \S*/fade
 # install grub-theme
 git clone "$MIRROR_GITHUB_URL/vinceliuice/grub2-themes.git" && pushd grub2-themes && ./install.sh -b -t stylish -s 4k && popd && rm -rf grub2-themes
 
-rm -rf $USER_HOME/{.bash_logout,.bash_profile,.bashrc,tools,dotfiles}
+# clean unused files
+rm -rf $USER_HOME/{.bash_logout,.bash_profile,.bashrc,dotfiles}

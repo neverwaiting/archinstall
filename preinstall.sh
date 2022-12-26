@@ -69,13 +69,13 @@ echo -e "[archlinuxcn]\nServer = https://repo.archlinuxcn.org/\$arch" >> /etc/pa
 
 pacman -Sy --noconfirm archlinux-keyring archlinuxcn-keyring
 
-pacstrap /mnt base base-devel linux linux-firmware vi neovim dhcpcd || (echo "pacstrap error"; exit 1)
+pacstrap /mnt base linux linux-firmware || (echo "pacstrap error"; exit 1)
 genfstab -U /mnt >> /mnt/etc/fstab
 
 echo $HOSTNAME >> /mnt/etc/hostname
 
 # arch-chroot /mnt
-curl -fsL https://github.91chi.fun/https://raw.github.com/neverwaiting/archinstall/master/chroot.sh > /mnt/chroot.sh && arch-chroot /mnt bash chroot.sh && rm /mnt/chroot.sh
+cp chroot.sh /mnt/chroot.sh && arch-chroot /mnt bash chroot.sh && rm /mnt/chroot.sh
 
 umount -R /mnt
 
