@@ -91,7 +91,7 @@ echo -e "[archlinuxcn]\nServer = https://repo.archlinuxcn.org/\$arch" >> /etc/pa
 
 pacman -Sy --noconfirm archlinux-keyring archlinuxcn-keyring
 
-pacstrap /mnt linux linux-firmware base base-devel vi dhcpcd
+pacstrap /mnt linux linux-firmware base base-devel vi dhcpcd reflector
 genfstab -U /mnt >> /mnt/etc/fstab
 
 echo $HOSTNAME >> /mnt/etc/hostname

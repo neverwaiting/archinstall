@@ -52,6 +52,16 @@ cat << EOF >> /etc/hosts
 127.0.0.1	$HOSTNAME.localdomain	$HOSTNAME
 EOF
 
+# update mirror source
+pacman_install reflector
+reflector --country China --latest 5 --protocol http --protocol https --sort rate --save /etc/pacman.d/mirrorlist > /dev/null 2>&1
+cat << EOF >> /etc/pacman.conf
+[archlinuxcn]
+SigLevel = Optional TrustAll
+Server = https://repo.archlinuxcn.org/\$arch
+EOF
+pacman -Sy --noconfirm archlinux-keyring archlinuxcn-keyring
+
 pacman_install zsh
 # create user
 useradd -m -g wheel -s /bin/zsh "$name"
@@ -75,16 +85,6 @@ pacman_install grub efibootmgr $UCODE os-prober
 
 grub-install --target="$(uname -m)-efi" --efi-directory=/boot --removable
 grub-mkconfig -o /boot/grub/grub.cfg
-
-# update mirror source
-pacman_install reflector
-reflector --country China --latest 5 --protocol http --protocol https --sort rate --save /etc/pacman.d/mirrorlist > /dev/null 2>&1
-cat << EOF >> /etc/pacman.conf
-[archlinuxcn]
-SigLevel = Optional TrustAll
-Server = https://repo.archlinuxcn.org/\$arch
-EOF
-pacman -Sy --noconfirm archlinux-keyring archlinuxcn-keyring
 
 if [ -z $driver ]; then driver="1"; fi
 case $driver in
