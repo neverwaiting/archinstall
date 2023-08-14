@@ -112,7 +112,7 @@ sudo -u "$name" git -C "$USER_FCITX_THEME_DIR" clone "$MIRROR_GITHUB_URL/sxqsfun
 sudo -u "$name" cp -r "$USER_FCITX_THEME_DIR/fcitx5-sogou-themes/Alpha-black" "$USER_FCITX_THEME_DIR"
 
 # install packages in packages.csv file
-curl -fsL https://github.91chi.fun/https://raw.github.com/neverwaiting/archinstall/master/packages.csv > /tmp/packages.csv
+curl -fsL MIRROR_GITHUB_URL_PREFIX/https://raw.github.com/neverwaiting/archinstall/master/packages.csv > /tmp/packages.csv
 while IFS=',' read -a packs; do
   if [ -z "${packs[0]}" ]; then
     if pacman -Ss "${packs[1]}" >> /dev/null; then
