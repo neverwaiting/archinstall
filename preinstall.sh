@@ -2,6 +2,8 @@
 
 set -e
 
+MIRROR_GITHUB_URL_PREFIX=https://ghproxy.com
+
 read -p"please input your name: " name
 export name
 while true; do
@@ -97,7 +99,7 @@ genfstab -U /mnt >> /mnt/etc/fstab
 echo $HOSTNAME >> /mnt/etc/hostname
 
 # arch-chroot /mnt
-curl -fsL https://github.91chi.fun/https://raw.github.com/neverwaiting/archinstall/master/chroot.sh > /mnt/chroot.sh && \
+curl -fsL MIRROR_GITHUB_URL_PREFIX/https://raw.github.com/neverwaiting/archinstall/master/chroot.sh > /mnt/chroot.sh && \
 arch-chroot /mnt bash chroot.sh && rm /mnt/chroot.sh
 
 umount -R /mnt
