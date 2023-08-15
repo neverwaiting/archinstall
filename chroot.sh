@@ -6,7 +6,7 @@ USER_HOME="/home/$name"
 USER_LOCAL_HOME="$USER_HOME/.local"
 USER_CONFIG_HOME="$USER_HOME/.config"
 MIRROR_GITHUB_URL_PREFIX="https://ghproxy.com"
-MIRROR_GITHUB_URL="MIRROR_GITHUB_URL_PREFIX/https://github.com"
+MIRROR_GITHUB_URL="$MIRROR_GITHUB_URL_PREFIX/https://github.com"
 TEMP_PACKAGES_DIR="/tmp/packages"
 
 pacman_install() {
