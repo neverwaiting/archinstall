@@ -52,7 +52,7 @@ cat << EOF >> /etc/hosts
 ::1	localhost
 127.0.0.1	$HOSTNAME.localdomain	$HOSTNAME
 EOF
-# sh -c "$(curl -fsL $MIRROR_GITHUB_URL_PREFIX/https://raw.githubusercontent.com/neverwaiting/dotfiles/master/.local/bin/github_speed_up)"
+sh -c "$(curl -fsL $MIRROR_GITHUB_URL_PREFIX/https://raw.githubusercontent.com/neverwaiting/dotfiles/master/.local/bin/github_speed_up)"
 
 # update mirror source
 pacman_install reflector
