@@ -89,7 +89,7 @@ mount ${PARTITION[0]} /mnt/boot
 
 reflector --country China --latest 5 --protocol http --protocol https --sort rate --save /etc/pacman.d/mirrorlist > /dev/null 2>&1
 
-echo -e "[archlinuxcn]\nServer = https://repo.archlinuxcn.org/\$arch" >> /etc/pacman.conf
+echo -e "[archlinuxcn]\nServer = https://opentuna.cn/archlinuxcn/\$arch" >> /etc/pacman.conf
 
 pacman -Sy --noconfirm archlinux-keyring archlinuxcn-keyring
 

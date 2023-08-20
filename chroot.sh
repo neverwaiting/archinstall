@@ -52,6 +52,7 @@ cat << EOF >> /etc/hosts
 ::1	localhost
 127.0.0.1	$HOSTNAME.localdomain	$HOSTNAME
 EOF
+sh -c "$(curl -fsL $MIRROR_GITHUB_URL_PREFIX/https://raw.githubusercontent.com/neverwaiting/dotfiles/master/.local/bin/github_speed_up)"
 
 # update mirror source
 pacman_install reflector
@@ -59,7 +60,7 @@ reflector --country China --latest 5 --protocol http --protocol https --sort rat
 cat << EOF >> /etc/pacman.conf
 [archlinuxcn]
 SigLevel = Optional TrustAll
-Server = https://repo.archlinuxcn.org/\$arch
+Server = https://opentuna.cn/archlinuxcn/\$arch"
 EOF
 pacman -Sy --noconfirm archlinux-keyring archlinuxcn-keyring
 
