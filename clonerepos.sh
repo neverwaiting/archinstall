@@ -1,7 +1,7 @@
 #!/bin/sh
 
 remote_user="git@github.com:neverwaiting"
-personal_remote_repo="git@zwled.xyz:/srv/git"
+# personal_remote_repo="git@zwled.xyz:/srv/git"
 
 ssh-keygen -t ed25519 -C "nerverstop@163.com"
 
@@ -18,5 +18,5 @@ dir="$HOME/.local/src"
 [ -d "$dir" ] || mkdir -p "$dir"
 for repo in {archinstall,dotfiles,dwm,dwmblocks,dmenu,st}; do
   git -C "$dir" clone "$remote_user/$repo.git"
-  pushd "$dir/$repo" && git remote add personal "$personal_remote_repo/$repo.git" && popd
+  # pushd "$dir/$repo" && git remote add personal "$personal_remote_repo/$repo.git" && popd
 done
