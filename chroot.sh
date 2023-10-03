@@ -139,7 +139,7 @@ aur_install yay
 sudo -u "$name" git clone "$MIRROR_GITHUB_URL/neverwaiting/dotfiles.git" "$USER_HOME/dotfiles"&& \
 sudo -u "$name" cp -r "$USER_HOME/dotfiles/.config" "$USER_HOME/" && \
 sudo -u "$name" cp -r "$USER_HOME/dotfiles/.local" "$USER_HOME/" && \
-sudo -u "$name" cp "$USER_HOME/dotfiles/.zprofile" "$USER_HOME/" && \
+sudo -u "$name" cp -P "$USER_HOME/dotfiles/.zprofile" "$USER_HOME/" && \
 sudo -u "$name" cp "$USER_CONFIG_HOME/npm/npmrc" "$USER_HOME/.npmrc" || echo -e "########## set dotfiles error! ##########\n"
 
 # configuration for picom
