@@ -2,7 +2,7 @@
 
 set -e
 
-MIRROR_GITHUB_URL_PREFIX="https://ghproxy.com"
+MIRROR_GITHUB_URL_PREFIX="https://ghproxy.cn"
 
 read -p"please input your name: " name
 export name
