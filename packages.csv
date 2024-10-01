@@ -3,7 +3,7 @@
 ,xorg,N,用于linux图形化界面
 ,xorg-server,N,用于linux图形化界面
 ,xorg-xinit,N,用于linux图形化界面
-,openvpn,Y,一款用于创建虚拟私人网络加密通道的软件包
+,openvpn,N,一款用于创建虚拟私人网络加密通道的软件包
 ,starship,Y,一款用于定制、美化终端以及shell提示符工具
 ,wget,Y,一款从网络上自动下载文件的自由工具
 ,zip,Y,压缩工具
@@ -63,7 +63,7 @@
 ,v2ray,N,代理工具
 ,ventoy-bin,N,一款用于制作系统U盘启动工具
 A,yesplaymusic,N,一款开源的网易云免费音乐播放器
-Y,zsh-fast-syntax-highlighting,Y,zsh高亮语法显示插件
+Y,zsh-fast-syntax-highlighting,N,zsh高亮语法显示插件
 Y,lolcat,Y,一个在Linux 终端中输出彩虹特效的命令行工具
 G,https://github.com/neverwaiting/dwm.git,N,窗口管理器
 G,https://github.com/neverwaiting/dwmblocks.git,N,一个轻量级的状态栏构建工具
