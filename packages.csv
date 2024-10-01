@@ -19,8 +19,8 @@
 ,go,Y,
 ,lua,Y,
 ,luarocks,Y,lua包管理器
-,nodejs,Y,
-,npm,Y,
+,nodejs,N,
+,npm,N,
 ,python,Y,
 ,python-pip,Y,
 ,websocketd,Y,一款简单的快速创建websocket服务器的命令行工具
