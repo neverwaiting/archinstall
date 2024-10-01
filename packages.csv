@@ -65,6 +65,7 @@
 A,yesplaymusic,N,一款开源的网易云免费音乐播放器
 Y,zsh-fast-syntax-highlighting,N,zsh高亮语法显示插件
 Y,lolcat,Y,一个在Linux 终端中输出彩虹特效的命令行工具
+Y,nvm,Y,nodejs版本管理工具
 G,https://github.com/neverwaiting/dwm.git,N,窗口管理器
 G,https://github.com/neverwaiting/dwmblocks.git,N,一个轻量级的状态栏构建工具
 G,https://github.com/neverwaiting/dmenu.git,N,搜索菜单工具
