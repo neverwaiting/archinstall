@@ -5,7 +5,7 @@ set -e
 USER_HOME="/home/$name"
 USER_LOCAL_HOME="$USER_HOME/.local"
 USER_CONFIG_HOME="$USER_HOME/.config"
-MIRROR_GITHUB_URL_PREFIX="https://ghproxy.com"
+MIRROR_GITHUB_URL_PREFIX="https://ghproxy.cn"
 MIRROR_GITHUB_URL="$MIRROR_GITHUB_URL_PREFIX/https://github.com"
 TEMP_PACKAGES_DIR="/tmp/packages"
 
@@ -17,7 +17,7 @@ aur_install() {
   [ -d "$TEMP_PACKAGES_DIR" ] || sudo -u "$name" mkdir -p "$TEMP_PACKAGES_DIR"
   for item in $@; do
     sudo -u "$name" git -C "$TEMP_PACKAGES_DIR" clone "https://aur.archlinux.org/${item}.git" && \
-    sudo -u "$name" sed -iE 's#https://github\.com#https://ghproxy\.com/&#g' "$TEMP_PACKAGES_DIR/$item/PKGBUILD" && \
+    sudo -u "$name" sed -iE 's#https://github\.com#https://ghproxy\.cn/&#g' "$TEMP_PACKAGES_DIR/$item/PKGBUILD" && \
     pushd "$TEMP_PACKAGES_DIR/$item" && \
     sudo -u "$name" GOPROXY="https://goproxy.cn" makepkg --noconfirm -si && \
     popd || echo -e "########## AUR: Install $item failed! ##########\n"
