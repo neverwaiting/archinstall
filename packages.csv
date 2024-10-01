@@ -52,9 +52,9 @@
 ,pulsemixer,N,CLI和curses混合器
 ,python-pywal,N,可以从图片中提取主题颜色，并将这些颜色应用到终端、桌面环境以及其他应用程序中，从而实现统一的配色效果
 ,ueberzug,N,可用于图片预览(与lf工具结合)
-,bmon,Y,一款强大的网络带宽监视和调试工具
-,yt-dlp,Y,一款用于下载YouTube、Bilibili、SoundCloud 等平台资源的命令行工具
-,lynx,Y,是个纯文字网页浏览器，是在具有高亮文字功能的终端上使用的
+,bmon,N,一款强大的网络带宽监视和调试工具
+,yt-dlp,N,一款用于下载YouTube、Bilibili、SoundCloud 等平台资源的命令行工具
+,lynx,N,是个纯文字网页浏览器，是在具有高亮文字功能的终端上使用的
 ,net-tools,Y,网络工具集
 ,brave-bin,N,一款牛叉的浏览器
 ,alsa-utils,N,是alsa的一个工具包(包含有声卡测试和音频编辑)
