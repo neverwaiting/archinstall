@@ -57,9 +57,9 @@
 ,lynx,Y,是个纯文字网页浏览器，是在具有高亮文字功能的终端上使用的
 ,net-tools,Y,网络工具集
 ,brave-bin,N,一款牛叉的浏览器
-,alsa-utils,Y,是alsa的一个工具包(包含有声卡测试和音频编辑)
+,alsa-utils,N,是alsa的一个工具包(包含有声卡测试和音频编辑)
 ,figlet,Y,一款文字转字符图案的终端工具
-,neofetch,Y,一款显示带有发行徽标的Linux系统信息的终端工具
+,neofetch,N,一款显示带有发行徽标的Linux系统信息的终端工具
 ,v2ray,N,代理工具
 ,ventoy-bin,N,一款用于制作系统U盘启动工具
 A,yesplaymusic,N,一款开源的网易云免费音乐播放器
